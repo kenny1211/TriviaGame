@@ -45,11 +45,12 @@ var questionCount = 0;
 var right = 0;
 var wrong = 0;
 var notAnswered = 0;
+var outOfTime = false;
 var counter = 15;
 var answerPageCounter = 5;
 var time; //for time interval manipulation
 
-//hide reset button, answer page, and ending credits
+//hide reset button
 $("#resetButton").hide()
 
 // function that keeps time
@@ -65,6 +66,7 @@ function displayCountdown(){
 
   if (counter === 0){
     stopTimer();
+    unanswered();
     // function will run after times up
   }
 }
@@ -85,6 +87,7 @@ function displayCountdownAnswerPage(){
   $("#timer").html("<h2>" + answerPageCounter + "</h2>");
 
   if (answerPageCounter === 0){
+    counter = 15;
     stopTimer();
     showCurrentQuestion();
   }
@@ -92,7 +95,7 @@ function displayCountdownAnswerPage(){
 
 //display questionCount and current question text
 function showCurrentQuestion() {
-
+  $("#triviaSpot").empty();
   displayCountdown();
 
   var questDiv = $("<div>");
@@ -108,6 +111,10 @@ function showCurrentQuestion() {
 
   renderButtons(questionCount);
   $("#startButton").hide();
+
+  if(questionCount > 10){
+    endingMessage();
+  }
 }
 
 //display answer options and assign data-name (in order to compare to answer)
@@ -132,8 +139,8 @@ function chosenOption(){
     correctAnswer();
   } else if (userChoice != questionBank[questionCount].answer) {
     incorrectAnswer();
-  } else if (counter === 0){
-    unaswered();
+  } else {
+    unanswered();
   };
 }
 // start game on click (render questions and display timer)
@@ -144,42 +151,83 @@ $(document).on("click", ".buttonOptions", chosenOption);
 
 // correct answer function
 function correctAnswer(){
+  clearInterval(time)
   questionCount++;
   right++;
   $("#triviaSpot").empty();
-  $("#trivisSpot").html("<h3> You got it dude!");
+  var correctText = $("<h2>");
+  correctText.text("You got it dude!")
+  $("#triviaSpot").append(correctText);
+  resetCounters();
   displayCountdownAnswerPage();
+  if(questionCount > 10){
+    endingMessage();
+  }
+  
 }
 // incorrect answer function
 function incorrectAnswer(){
+  clearInterval(time)
   questionCount++;
   wrong++;
   $("#triviaSpot").empty();
-  var wrongText = ("$<h3>");
-  wrongText.html("Bummer! The right answer was: " + questionBank[questionCount-1].answer);
-  $("triviSpot").append(wrongText);
+  var wrongText = $("<h2>");
+  wrongText.text("Bummer! The right answer was: " + questionBank[questionCount-1].answer);
+  $("#triviaSpot").append(wrongText);
+  resetCounters();
   displayCountdownAnswerPage();
+  if(questionCount > 10){
+    endingMessage();
+  }
 }
-
-function unaswered(){
+// unanswered function
+function unanswered(){
+  clearInterval(time)
   questionCount++;
   notAnswered++;
   $("#triviaSpot").empty();
+  var unansweredText = $("<h2>");
+  unansweredText.text("Too fast! ... Sike! Too slow man.");
+  $("#triviaSpot").append(unansweredText);
+  resetCounters();
   displayCountdownAnswerPage();
-}
+  if(questionCount > 10){
+    endingMessage();
+  }
+  }
+  
 
-// ending message function
+
+// ending message function and when to display
 function endingMessage(){
   $("#resetButton").show();
+  $("#triviaSpot").empty();
+  var endMsg = $("<h2>");
+  endMsg.text("Looks like you got " + right + "right, " + wrong + ", and " + notAnswered + " unanswered.");
+  $("#triviaSpot").append(endMsg);
+
 }
 
+// reset function and button 
 function reset(){
-  var questionCount = 0;
-  var right = 0;
-  var wrong = 0;
-  var notAnswered = 0;
+  questionCount = 0;
+  right = 0;
+  wrong = 0;
+  notAnswered = 0;
+  counter = 15;
+  answerPageCounter = 5;
 
   showCurrentQuestion();
+}
+
+$("#resetButton").on("click", reset);
+
+// reset counters 
+function resetCounters(){
+  if (questionCount>1){
+    answerPageCounter = 5;
+    counter = 15;
+  }
 }
 
 
