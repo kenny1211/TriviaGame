@@ -1,3 +1,4 @@
+
 var questionBank = [{
   question: "What was the name of Angelica's doll in the show 'Rugrats'?",
   options: ["Cindy", "Clarissa", "Cynthia", "Candy"],
@@ -45,7 +46,11 @@ var right = 0;
 var wrong = 0;
 var notAnswered = 0;
 var counter = 15;
+var answerPageCounter = 5;
 var time; //for time interval manipulation
+
+//hide reset button, answer page, and ending credits
+$("#resetButton").hide()
 
 // function that keeps time
 function timer(){
@@ -54,6 +59,7 @@ function timer(){
 }
 // show countdown
 function displayCountdown(){
+  timer();
   counter--;
   $("#timer").html("<h2>" + counter + "</h2>");
 
@@ -66,11 +72,27 @@ function displayCountdown(){
 function stopTimer(){
   clearInterval(time);
 }
-displayCountdown();
-timer();
+// display countDown for answerPage
+function timerAnswerPage(){
+  clearInterval(time);
+  time = setInterval(displayCountdownAnswerPage, 1000);
+}
+
+function displayCountdownAnswerPage(){
+  timerAnswerPage();
+  answerPageCounter--;
+  $("#timer").empty();
+  $("#timer").html("<h2>" + answerPageCounter + "</h2>");
+
+  if (answerPageCounter === 0){
+    stopTimer();
+  }
+}
 
 //display questionCount and current question text
-function showCurrentQuestion(questionCount) {
+function showCurrentQuestion() {
+
+  displayCountdown();
 
   var questDiv = $("<div>");
   var questCount = $("<h4>");
@@ -84,11 +106,11 @@ function showCurrentQuestion(questionCount) {
   $("#triviaSpot").append(questDiv);
 
   renderButtons(questionCount);
+  $("#startButton").hide();
 }
-showCurrentQuestion(questionCount);
 
 //display answer options and assign data-name (in order to compare to answer)
-function renderButtons(questionCount){
+function renderButtons(){
   
   for( var i = 0; i < questionBank[questionCount].options.length; i++) {
   var button = $("<button>");
@@ -100,5 +122,71 @@ function renderButtons(questionCount){
   console.log(button);
   }
 }
+//function to collect users' clicked button input and run if statements for game
+function chosenOption(){
+  clearInterval(time);
+  var userChoice = $(this).attr("data-name");
+  
+  if (userChoice === questionBank[questionCount].answer) {
+    correctAnswer();
+  } else if (userChoice != questionBank[questionCount].answer) {
+    incorrectAnswer();
+  } else if (counter === 0){
+    unaswered();
+  };
+}
+// start game on click (render questions and display timer)
+$("#startButton").on("click", showCurrentQuestion);
+
+//bind clicked answer to dom to get data-name
+$(document).on("click", ".buttonOptions", chosenOption);
+
+// correct answer function
+function correctAnswer(){
+  questionCount++;
+  right++;
+  $("#triviaSpot").empty();
+  $("#trivisSpot").html("<h3> You got it dude!");
+  answerPage();
+}
+// incorrect answer function
+function incorrectAnswer(){
+  questionCount++;
+  wrong++;
+  $("#triviaSpot").empty();
+  var wrongText = ("$<h3>");
+  wrongText.html("Bummer! The right answer was: " + questionBank[questionCount-1].answer);
+  $("triviSpot").append(wrongText);
+  answerPage();
+}
+
+function unaswered(){
+  questionCount++;
+  notAnswered++;
+  $("#triviaSpot").empty();
+  answerPage();
+}
+
+// answer page function (5 second timer, then renders new questions/answers)
+function answerPage(){
+  displayCountdownAnswerPage();
+  if (answerPageCounter === 0) {
+    showCurrentQuestion();
+  }
+}
+// ending message function
+function endingMessage(){
+  $("#resetButton").show();
+}
+
+function reset(){
+  var questionCount = 0;
+  var right = 0;
+  var wrong = 0;
+  var notAnswered = 0;
+
+  showCurrentQuestion();
+}
+
 
 
