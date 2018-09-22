@@ -91,6 +91,10 @@ function displayCountdownAnswerPage(){
     stopTimer();
     showCurrentQuestion();
   }
+  // function to reset game
+  if (questionCount == (questionBank.length-1)){
+    endingMessage();
+  }
 }
 
 //display questionCount and current question text
@@ -160,11 +164,9 @@ function correctAnswer(){
   $("#triviaSpot").append(correctText);
   resetCounters();
   displayCountdownAnswerPage();
-  if(questionCount > 10){
-    endingMessage();
-  }
-  
 }
+  
+
 // incorrect answer function
 function incorrectAnswer(){
   clearInterval(time)
@@ -176,9 +178,6 @@ function incorrectAnswer(){
   $("#triviaSpot").append(wrongText);
   resetCounters();
   displayCountdownAnswerPage();
-  if(questionCount > 10){
-    endingMessage();
-  }
 }
 // unanswered function
 function unanswered(){
@@ -191,19 +190,18 @@ function unanswered(){
   $("#triviaSpot").append(unansweredText);
   resetCounters();
   displayCountdownAnswerPage();
-  if(questionCount > 10){
-    endingMessage();
-  }
   }
   
 
 
 // ending message function and when to display
 function endingMessage(){
+  clearInterval(time);
+  $("#timer").empty();
   $("#resetButton").show();
   $("#triviaSpot").empty();
   var endMsg = $("<h2>");
-  endMsg.text("Looks like you got " + right + "right, " + wrong + ", and " + notAnswered + " unanswered.");
+  endMsg.text("Looks like you got " + right + " right, " + wrong + "wrong, and " + notAnswered + " unanswered.");
   $("#triviaSpot").append(endMsg);
 
 }
