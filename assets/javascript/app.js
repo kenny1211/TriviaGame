@@ -44,8 +44,30 @@ var questionCount = 0;
 var right = 0;
 var wrong = 0;
 var notAnswered = 0;
-var counter = 30;
+var counter = 15;
 var time; //for time interval manipulation
+
+// function that keeps time
+function timer(){
+  clearInterval(time);
+  time = setInterval(displayCountdown, 1000)
+}
+// show countdown
+function displayCountdown(){
+  counter--;
+  $("#timer").html("<h2>" + counter + "</h2>");
+
+  if (counter === 0){
+    stopTimer();
+    // function will run after times up
+  }
+}
+// stop timer
+function stopTimer(){
+  clearInterval(time);
+}
+displayCountdown();
+timer();
 
 //display questionCount and current question text
 function showCurrentQuestion(questionCount) {
@@ -78,4 +100,5 @@ function renderButtons(questionCount){
   console.log(button);
   }
 }
+
 
