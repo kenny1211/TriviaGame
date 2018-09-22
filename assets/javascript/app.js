@@ -86,6 +86,7 @@ function displayCountdownAnswerPage(){
 
   if (answerPageCounter === 0){
     stopTimer();
+    showCurrentQuestion();
   }
 }
 
@@ -147,7 +148,7 @@ function correctAnswer(){
   right++;
   $("#triviaSpot").empty();
   $("#trivisSpot").html("<h3> You got it dude!");
-  answerPage();
+  displayCountdownAnswerPage();
 }
 // incorrect answer function
 function incorrectAnswer(){
@@ -157,23 +158,16 @@ function incorrectAnswer(){
   var wrongText = ("$<h3>");
   wrongText.html("Bummer! The right answer was: " + questionBank[questionCount-1].answer);
   $("triviSpot").append(wrongText);
-  answerPage();
+  displayCountdownAnswerPage();
 }
 
 function unaswered(){
   questionCount++;
   notAnswered++;
   $("#triviaSpot").empty();
-  answerPage();
+  displayCountdownAnswerPage();
 }
 
-// answer page function (5 second timer, then renders new questions/answers)
-function answerPage(){
-  displayCountdownAnswerPage();
-  if (answerPageCounter === 0) {
-    showCurrentQuestion();
-  }
-}
 // ending message function
 function endingMessage(){
   $("#resetButton").show();
