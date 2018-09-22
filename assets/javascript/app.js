@@ -201,7 +201,7 @@ function endingMessage(){
   $("#resetButton").show();
   $("#triviaSpot").empty();
   var endMsg = $("<h2>");
-  endMsg.text("Looks like you got " + right + " right, " + wrong + "wrong, and " + notAnswered + " unanswered.");
+  endMsg.text("Looks like you got " + right + " right, " + wrong + " wrong, and " + notAnswered + " unanswered.");
   $("#triviaSpot").append(endMsg);
 
 }
